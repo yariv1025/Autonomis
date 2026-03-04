@@ -18,21 +18,62 @@
 
 ## How It Works
 
+### High-Level Architecture
+
+The Router is the only entry point. It detects your intent and either runs the full SDLC or jumps to a specific phase. The full pipeline is: **Research → Plan → Design Review → Execution Loop → PR → Learning**. The Execution Loop is deterministic (fixed order: Implement → Validate → on failure, Debug → Validate again → on pass, Review).
+
+```mermaid
+flowchart LR
+  subgraph entry [Entry]
+    Router[Router]
+  end
+  subgraph sdlc [SDLC Phases]
+    R[Research]
+    P[Plan]
+    DR[Design Review]
+    subgraph EL [Execution Loop]
+      Impl[Implement]
+      Val[Validate]
+      Debug[Debug]
+      Rev[Review]
+      Impl --> Val
+      Val -->|on failure| Debug
+      Debug --> Val
+      Val -->|on pass| Rev
+    end
+    PRPhase[PR]
+    L[Learning]
+  end
+  Router --> R --> P --> DR --> EL --> PRPhase --> L
+  Router -.->|PLAN intent| P
+  Router -.->|BUILD intent| EL
+  Router -.->|DEBUG intent| EL
+  Router -.->|REVIEW intent| DR
+```
+
+- **Router** detects intent: **START** (full SDLC), **PLAN**, **BUILD**, **DEBUG**, **REVIEW**. It routes to the matching phase; e.g. PLAN → Plan phase, BUILD/DEBUG → Execution Loop, REVIEW → Design Review or code review inside Execution.
+- **Execution Loop** order is fixed: Implement → Validate → (on fail) Debug → Validate again → (on pass) Review. Only the content of each step is model-dependent; the pipeline itself is deterministic and testable.
+- **Design Review** and **Code Review** (inside Execution) both enforce OWASP Top 10 and a performance rubric before sign-off.
+
+### From your perspective
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  YOU: "build a login flow" / "debug the failing test" / "review this PR"    │
 │                              ┌──────────────────────────────────────────┐   │
-│                       ┌──────►  Research → Plan → Design Review          │   │
-│                       │      │  (OWASP + performance gates)               │   │
-│  ┌─────────────────┐  │      └──────────────────┬───────────────────────┘   │
+│                       ┌──────►  Research → Plan → Design Review         │   │
+│                       │      │  (OWASP + performance gates)             │   │
+│                       │      └───────────────────┬──────────────────────┘   │
+│  ┌─────────────────┐  │                          │                          │
+│  │                 │  │      ┌───────────────────▼──────────────────────┐   │
+│  │                 │──┼──────►  BUILD/DEBUG/REVIEW ──► Execution Loop   │   │
+│  │     Router      │  │      │ (Implement → Validate → Debug → Review)  │   │
+│  │                 │  │      └───────────────────┬──────────────────────┘   │
 │  │                 │  │                          │                          │
-│  │  Router         │──┼────── BUILD/DEBUG/REVIEW ─┼──► Execution Loop        │
-│  │  (single entry) │  │       (Implement → Validate → Debug → Review)       │
-│  │                 │  │                          │                          │
-│  └─────────────────┘  │      ┌──────────────────▼───────────────────────┐   │
-│                       └──────►  PR → Learning                            │   │
-│                              │  (memory updated for next session)         │   │
-│                              └───────────────────────────────────────────┘   │
+│  └─────────────────┘  │      ┌───────────────────▼──────────────────────┐   │
+│                       └──────►  PR → Learning                           │   │
+│                              │  (memory updated for next session)       │   │
+│                              └──────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -42,15 +83,27 @@
 
 ## Install
 
+The plugin is distributed via GitHub only. Install using Claude Code’s marketplace commands or by cloning and adding the plugin directory (Cursor).
+
 ### Claude Code
 
-1. Add a plugin marketplace that includes this repo (or follow [plugin-structure](https://skills.sh/anthropics/claude-plugins-official/plugin-structure)).
-2. Install the `autonomis` plugin; point at `plugins/autonomis` (`.claude-plugin/plugin.json`).
+Add the repo as a marketplace, then install the plugin:
+
+```bash
+/plugin marketplace add yariv1025/Autonomis
+/plugin install autonomis@yariv1025-autonomis
+```
+
+Then restart Claude Code.
 
 ### Cursor
 
-1. **From Marketplace (when published):** Install **Autonomis** from the [Cursor Marketplace](https://cursor.com/marketplace).
-2. **From repo:** Clone this repo and add `plugins/autonomis` as a local plugin (`.cursor-plugin/plugin.json`).
+1. **Clone the repo**:
+   ```bash
+   git clone https://github.com/yariv1025/Autonomis.git
+   cd Autonomis
+   ```
+2. **Add as a local plugin** — In Cursor, add `plugins/autonomis` as a local plugin (it contains `.cursor-plugin/plugin.json`). See Cursor docs for “Add plugin from folder” or “Local plugin”.
 
 ### After install
 
@@ -118,15 +171,16 @@ You can run the full skill evaluation pipeline from this repo—for **personal u
 
 ### How to run evals
 
-1. **Clone the repo** and ensure you have Python 3 and the `claude` CLI (no API key required for duration-only timing).
-2. **Add or use** `.agents/skills/skill-creator/` (from the [skill-creator](https://skills.sh/anthropics/skills/skill-creator) skill or your local copy).
-3. **Run from the skill-creator directory**, e.g.:
+1. **Clone the repo** and ensure you have Python 3 and either the Anthropic API or the `claude` CLI.
+2. **API key vs CLI:** An **API key** is needed for token counts and full metrics in the benchmark. **Without an API key**, you can use the **Claude CLI** (`claude`); the pipeline then records **duration-only** timing (no token counts). Use the scripts with `--use-cli` (or the default when no API key is set) for CLI-based runs.
+3. **Add or use** `.agents/skills/skill-creator/` (from the [skill-creator](https://skills.sh/anthropics/skills/skill-creator) skill or your local copy).
+4. **Run from the skill-creator directory**, e.g.:
    ```bash
    cd .agents/skills/skill-creator
    python3 -m scripts.run_all_content_evals --skills-root ../../plugins/autonomis/skills --timeout 90
    # Then grade, aggregate, and generate review per iteration (see script --help and skill-creator docs).
    ```
-4. **Open the generated viewer** at e.g. `plugins/autonomis/skills/<skill>-workspace/iteration-1/review.html` to review outputs and benchmarks.
+5. **Open the generated viewer** at e.g. `plugins/autonomis/skills/<skill>-workspace/iteration-1/review.html` to review outputs and benchmarks.
 
 Re-running evals: run the same pipeline; your local `*-workspace/` dirs are updated and stay untracked.
 
@@ -139,53 +193,11 @@ Autonomis synthesizes ideas from four open-source projects (all MIT-licensed), w
 | Project | What we drew from |
 |--------|---------------------|
 | **cc10x** ([github.com/romiluz13/cc10x](https://github.com/romiluz13/cc10x)) | Intent-based routing (BUILD/DEBUG/REVIEW/PLAN), router-as-single-entry-point, session memory and verification-before-completion disciplines, pre-compact state persistence and recovery (FLAW-001), pre-commit test gate. |
-| **babysitter** (A5C AI) | Hook-driven orchestration, human escalation and iteration caps, quality gates and process structure. |
-| **beads** (Beads Contributors) | Task and dependency model; Autonomis uses a file-based task store with an interface that allows an optional beads backend later. |
-| **metaswarm** (Dave Sifry) | Selective context loading by scope (files, keywords, work type) so memory stays bounded and relevant. |
+| **babysitter** ([github.com/a5c-ai/babysitter](https://github.com/a5c-ai/babysitter)) | Hook-driven orchestration, human escalation and iteration caps, quality gates and process structure. |
+| **beads** ([github.com/steveyegge/beads](https://github.com/steveyegge/beads)) | Task and dependency model; Autonomis uses a file-based task store with an interface that allows an optional beads backend later. |
+| **metaswarm** ([github.com/dsifry/metaswarm](https://github.com/dsifry/metaswarm)) | Selective context loading by scope (files, keywords, work type) so memory stays bounded and relevant. |
 
-Autonomis is an independent project; we use these concepts and patterns with gratitude and attribution. Code and design in this repository are our own.
-
-*If your project is listed here and you prefer different attribution or wording, please DM me.*
-
----
-
-## Publish / Deploy to GitHub
-
-The repo is ready to push to GitHub and use as the source for both Claude Code and Cursor:
-
-1. **Initialize git (if not already):**  
-   `git init && git add . && git status`  
-   Ensure no `*-workspace` or `.agents` paths are listed as removed if you already had them tracked; see step 2.
-
-2. **If you previously committed eval workspaces and want to stop tracking them (keep them only locally):**
-   ```bash
-   git rm -r --cached plugins/autonomis/skills/architecture-patterns-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/code-review-patterns-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/debugging-patterns-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/knowledge-extraction-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/planning-patterns-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/research-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/router-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/session-memory-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/test-driven-development-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/validator-workspace 2>/dev/null || true
-   git rm -r --cached plugins/autonomis/skills/verification-before-completion-workspace 2>/dev/null || true
-   ```
-
-3. **Stage everything that should be committed** (respects .gitignore; includes .agents, excludes *-workspace):
-   ```bash
-   git add .
-   ```
-
-4. **Create a GitHub repo** (e.g. `yariv1025/Autonomis`), add it as `origin`, then:
-   ```bash
-   git commit -m "Plugin ready for publish"
-   git push -u origin main
-   ```
-
-5. **Claude Code:** Configure your Claude Code plugin marketplace to include this repository; users install the `autonomis` plugin from the `plugins/autonomis` directory.
-
-6. **Cursor:** Submit the repository at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) for listing in the Cursor Marketplace (manual review). Or use a [Team Marketplace](https://cursor.com/docs/plugins#team-marketplaces) and add this repo so your team can install from it.
+*If your project is listed here and you prefer different attribution or wording, please open an issue.*
 
 ---
 

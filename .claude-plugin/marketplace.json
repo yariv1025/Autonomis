@@ -1,0 +1,13 @@
+{
+  "name": "yariv1025-autonomis",
+  "owner": {
+    "name": "yariv1025"
+  },
+  "plugins": [
+    {
+      "name": "autonomis",
+      "source": "./plugins/autonomis",
+      "description": "SDLC-driven orchestration for Claude Code and Cursor: Research → Plan → Design Review → Execution Loop → PR → Learning. Security-first (OWASP Top 10) and performance-first."
+    }
+  ]
+}
