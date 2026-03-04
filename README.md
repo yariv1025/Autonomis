@@ -94,7 +94,7 @@ plugins/autonomis/
 │   ├── pre-commit                # Install to .git/hooks/pre-commit
 │   └── plan-review-owasp.md
 .autonomis/                       # Runtime state (created by plugin)
-docs/                             # known-flaws.md, evals-pipeline.md
+docs/                             # known-flaws.md only (user-facing behavior)
 .agents/skills/skill-creator/     # Eval pipeline for contributors (see below)
 ```
 
@@ -104,35 +104,31 @@ Eval workspaces (`plugins/autonomis/skills/*-workspace/`) are **not** in the rep
 
 ## Evaluating Skills (For Contributors)
 
-You can run the full skill evaluation pipeline from this repo to improve the plugin’s skills. **Eval workspaces and run artifacts are not committed** so the published plugin stays small; you generate them locally when you run evals.
+You can run the full skill evaluation pipeline from this repo—for **personal use** (e.g. to check a skill) or to **contribute** improvements. The published plugin does not include eval workspaces or pipeline docs; you keep those locally.
 
 ### What’s in the repo
 
 - **Skill definitions** — Each skill under `plugins/autonomis/skills/<name>/` has `SKILL.md` and optionally `evals/evals.json` (assertions).
-- **Eval tooling** — `.agents/skills/skill-creator/` contains scripts and the eval viewer used to run evals, grade runs, aggregate benchmarks, and generate the review HTML.
+- **Eval tooling** — `.agents/skills/skill-creator/` contains scripts to run evals, grade runs, aggregate benchmarks, and generate the review HTML. Use the scripts with `--help` for usage; pipeline steps and timing capture are described in the skill-creator skill or in the script logic.
 
-### What’s not in the repo
+### What’s not in the repo (stay local)
 
-- **Eval workspaces** — Directories like `plugins/autonomis/skills/<name>-workspace/` (e.g. `router-workspace/`, `validator-workspace/`) are **gitignored**. They contain iteration dirs, run outputs, `grading.json`, `timing.json`, `benchmark.json`, and `review.html`. You create these when you run the pipeline.
+- **Eval workspaces** — `plugins/autonomis/skills/<name>-workspace/` (e.g. `router-workspace/`, `validator-workspace/`) are **gitignored**. They hold iteration dirs, run outputs, grading, timing, benchmarks, and `review.html`. You create them when you run the pipeline.
+- **Pipeline and planning docs** — Detailed pipeline steps, rubrics, and comparison/feedback docs are not shipped; keep your own notes locally if you run evals.
 
 ### How to run evals
 
-1. **Clone the repo** and ensure you have Python 3 and the `claude` CLI (for running evals; no API key required for duration-only timing).
-2. **Read the full pipeline** in [docs/evals-pipeline.md](docs/evals-pipeline.md). It covers:
-   - Assertions in each skill’s `evals/evals.json`
-   - Running with_skill vs old_skill per eval
-   - Capturing timing (optional; CLI gives duration, API gives tokens)
-   - Grading runs, aggregating benchmarks, generating the static viewer
-3. **Run from the skill-creator directory:**
+1. **Clone the repo** and ensure you have Python 3 and the `claude` CLI (no API key required for duration-only timing).
+2. **Add or use** `.agents/skills/skill-creator/` (from the [skill-creator](https://skills.sh/anthropics/skills/skill-creator) skill or your local copy).
+3. **Run from the skill-creator directory**, e.g.:
    ```bash
    cd .agents/skills/skill-creator
-   # Run all content evals (creates *-workspace dirs and outputs)
    python3 -m scripts.run_all_content_evals --skills-root ../../plugins/autonomis/skills --timeout 90
-   # Then grade, aggregate, and generate review per iteration (see docs/evals-pipeline.md)
+   # Then grade, aggregate, and generate review per iteration (see script --help and skill-creator docs).
    ```
 4. **Open the generated viewer** at e.g. `plugins/autonomis/skills/<skill>-workspace/iteration-1/review.html` to review outputs and benchmarks.
 
-Re-running evals in the future: run the same pipeline; your local `*-workspace/` dirs will be updated. They remain untracked so they are not pushed to GitHub.
+Re-running evals: run the same pipeline; your local `*-workspace/` dirs are updated and stay untracked.
 
 ---
 
@@ -149,7 +145,7 @@ Autonomis synthesizes ideas from four open-source projects (all MIT-licensed), w
 
 Autonomis is an independent project; we use these concepts and patterns with gratitude and attribution. Code and design in this repository are our own.
 
-*If your project is listed here and you prefer different attribution or wording, please open an issue.*
+*If your project is listed here and you prefer different attribution or wording, please DM me.*
 
 ---
 

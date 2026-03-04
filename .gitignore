@@ -11,7 +11,12 @@ plugins/autonomis/skills/*-workspace/
 plugins/autonomis/skills/.agents/
 plugins/autonomis/skills/.cursor/
 
-# Dev tooling: .agents/ is INCLUDED so contributors can run evals (see README and docs/evals-pipeline.md)
+# Planning / process docs (keep locally; not part of published plugin)
+docs/evals-pipeline.md
+docs/design-review-rubric.md
+docs/eval-comparison-feedback.md
+
+# Dev tooling: .agents/ is INCLUDED so contributors can run evals (see README).
 # Do not add .agents/ here.
 
 # OS and editors
