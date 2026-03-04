@@ -16,6 +16,9 @@ docs/evals-pipeline.md
 docs/design-review-rubric.md
 docs/eval-comparison-feedback.md
 
+# Eval fixtures (keep locally; do not ship)
+email-validation/
+
 # Dev tooling: .agents/ is INCLUDED so contributors can run evals (see README).
 # Do not add .agents/ here.
 
