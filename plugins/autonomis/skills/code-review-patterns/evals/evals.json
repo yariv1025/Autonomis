@@ -1,0 +1,25 @@
+{
+  "skill_name": "code-review-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the code in plugins/autonomis/skills/code-review-patterns/evals/fixtures/src/auth/ for this change: it adds login with email/password and stores a JWT in a cookie. First confirm it meets the spec (login works, token stored), then check security and performance. Give me Stage 1 (spec) and Stage 2 (findings) with file:line for each finding, and a Decision (Approve or Request Changes) with required fixes if any.",
+      "expected_output": "Output has Stage 1 (spec compliance, tests run), Stage 2 (security, performance, quality with file:line and recommendation), Decision (Approve | Request Changes), and if Request Changes a list of required fixes with file:line. Severity (CRITICAL/MAJOR/MINOR) per finding; no Approve if CRITICAL issues.",
+      "files": [],
+      "expectations": [
+        "Output has Stage 1 (spec) and Stage 2 (findings) or equivalent two-stage structure",
+        "Output includes a Decision (Approve or Request Changes) and file:line references for findings"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We need a quick review of the new API client in plugins/autonomis/skills/code-review-patterns/evals/fixtures/lib/api.ts — does it match our API design and are there any obvious security or performance issues? Use the two-stage approach: spec first, then quality.",
+      "expected_output": "Spec compliance checked first; then security/performance/code quality. Findings with file:line and recommendation. Decision and optional required fixes list.",
+      "files": [],
+      "expectations": [
+        "Output has Stage 1 (spec) and Stage 2 (findings) or equivalent two-stage structure",
+        "Output includes a Decision (Approve or Request Changes) and file:line references for findings"
+      ]
+    }
+  ]
+}

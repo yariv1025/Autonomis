@@ -1,0 +1,35 @@
+{
+  "skill_name": "autonomis-router",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The build is broken — tests are failing and I need to fix them before we can merge. Can you help?",
+      "expected_output": "Intent detected as DEBUG (error/fix signals). Router executes debug/recovery path; does not list capabilities. Emits Router Contract with STATUS and proceeds to Execution Loop in debug branch.",
+      "files": [],
+      "expectations": [
+        "Output includes a Router Contract or STATUS section",
+        "Output indicates a selected phase or execution path (e.g. debug, plan, review)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We want to plan and then build a small dashboard that shows internal metrics from our API. Where do we start?",
+      "expected_output": "Intent detected as PLAN or START (plan + build). Router loads state, selects plan phase or full SDLC; executes rather than describing options. Router Contract emitted.",
+      "files": [],
+      "expectations": [
+        "Output includes a Router Contract or STATUS section",
+        "Output indicates a selected phase or execution path (e.g. debug, plan, review)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review the changes in the auth branch — make sure they meet the spec and check for security issues.",
+      "expected_output": "Intent detected as REVIEW. Router proceeds to design review or code review in Execution; does not list what Autonomis can do. Executes review workflow.",
+      "files": [],
+      "expectations": [
+        "Output includes a Router Contract or STATUS section",
+        "Output indicates a selected phase or execution path (e.g. debug, plan, review)"
+      ]
+    }
+  ]
+}

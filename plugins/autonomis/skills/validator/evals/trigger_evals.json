@@ -1,0 +1,22 @@
+[
+  {"query": "our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?", "should_trigger": true},
+  {"query": "before we merge this pr i need to verify nothing is broken. run the project's tests and lint and give me the evidence — command run, exit code, and one-line summary for each. no 'looks good' without running.", "should_trigger": true},
+  {"query": "this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] → exit [code]: [summary]", "should_trigger": true},
+  {"query": "we just added a new helper in src/utils/format.ts. run tests and lint to confirm nothing broke. i need to see actual exit codes and output summary.", "should_trigger": true},
+  {"query": "check if the python project here (pyproject.toml or setup.py) passes its tests and lint. find the commands, run them, and report back with pass/fail and evidence.", "should_trigger": true},
+  {"query": "implementer says the feature is done. don't trust that — run the test and lint commands yourself and show me the evidence so we can gate the merge.", "should_trigger": true},
+  {"query": "i need to verify tests pass and lint is clean before marking this task complete. what commands should i run and what evidence format do you need?", "should_trigger": true},
+  {"query": "multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.", "should_trigger": true},
+  {"query": "write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.", "should_trigger": false},
+  {"query": "explain how npm test and npm run lint work in a typical node project.", "should_trigger": false},
+  {"query": "the build is broken and i need to fix it. can you help me debug the failing tests?", "should_trigger": false},
+  {"query": "add a new npm script in package.json that runs the linter with --fix.", "should_trigger": false},
+  {"query": "we want to add pre-commit hooks that run tests. what's the best way to do that?", "should_trigger": false},
+  {"query": "review this Dockerfile and tell me if the test stage is correct.", "should_trigger": false},
+  {"query": "our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?", "should_trigger": false},
+  {"query": "i have a vitest config that's ignoring some files. help me fix the glob so all relevant tests are run.", "should_trigger": false},
+  {"query": "tests are flaky — sometimes they pass sometimes they fail. how do i debug that?", "should_trigger": false},
+  {"query": "create a github action workflow that runs tests and lint on every pr.", "should_trigger": false},
+  {"query": "the deploy failed because a test timed out. where do we set the timeout for jest?", "should_trigger": false},
+  {"query": "we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what's the best approach?", "should_trigger": false}
+]

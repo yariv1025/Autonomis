@@ -1,0 +1,35 @@
+{
+  "skill_name": "validator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This is a Node project with package.json in the repo root. Discover the test and lint commands, run them, and report whether everything passes. Give me the evidence (command, exit code, brief summary) for each run.",
+      "expected_output": "Structured output with STATUS (PASS/FAIL), SCENARIOS_PASSED/TOTAL if available, and EVIDENCE array with entries like [command] → exit [code]: [summary]. All relevant commands (test, lint) must have been executed in this session.",
+      "files": [],
+      "expectations": [
+        "Output includes STATUS (PASS/FAIL) or evidence of running commands",
+        "Output includes at least one evidence line with exit code or command result"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We just added a new utility in src/utils/format.ts. Run the project's tests and lint to verify nothing is broken. I need to see the actual exit codes and a short summary of output, not just 'looks good'.",
+      "expected_output": "Evidence-based result: at least test and lint commands run, with format '[command] → exit [code]: [summary]'. No PASS claim without running the commands.",
+      "files": [],
+      "expectations": [
+        "Output includes STATUS (PASS/FAIL) or evidence of running commands",
+        "Output includes at least one evidence line with exit code or command result"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Check if the Python project in this repo passes its tests and lint. Find how to run them from the project root (pyproject.toml or setup.py) and report back with pass/fail and evidence.",
+      "expected_output": "Discovery of test/lint from Python project files; run commands in run-once mode; output includes STATUS and EVIDENCE array with exit codes and summaries.",
+      "files": [],
+      "expectations": [
+        "Output includes STATUS (PASS/FAIL) or evidence of running commands",
+        "Output includes at least one evidence line with exit code or command result"
+      ]
+    }
+  ]
+}

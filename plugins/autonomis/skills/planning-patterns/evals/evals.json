@@ -1,0 +1,25 @@
+{
+  "skill_name": "planning-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We need to add user login: email/password form, validation, call to POST /api/auth/login, store token, redirect to dashboard. Decompose this into work units with specific steps. Each step must be a single actionable item (file path + action + how to verify). No vague steps like 'add validation'.",
+      "expected_output": "Plan with Goal, Architecture (2–3 sentences), Tech Stack, Prerequisites. Work units with Files (exact paths) and Steps as specific actions (e.g. 'Write failing test for empty email in src/auth.test.ts, run npm test'). Validation commands and expected exit codes. DoD per unit; steps executable without asking questions.",
+      "files": [],
+      "expectations": [
+        "Output includes work units or steps with file paths or verification (test/lint)",
+        "Output includes Goal or Architecture or Tech Stack or Prerequisites"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Break down 'add a settings page where users can change their display name' into a plan. Every step should be something an implementer can do in one go with a clear verification (test or lint). Include max-files-per-unit and bite-sized steps.",
+      "expected_output": "Plan document with task structure: Files and numbered Steps (write test → run fail → implement → run pass → commit). Each step is 2–5 minutes, one concern per unit.",
+      "files": [],
+      "expectations": [
+        "Output includes work units or steps with file paths or verification (test/lint)",
+        "Output includes Goal or Architecture or Tech Stack or Prerequisites"
+      ]
+    }
+  ]
+}

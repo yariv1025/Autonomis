@@ -1,0 +1,8 @@
+# Autonomis config (optional)
+# Copy to .autonomis/config and adjust.
+
+# Max validation/debug iterations per work unit before escalating to human
+max_iterations=3
+
+# Strictness: lightweight | strict (gates and review depth)
+strictness=lightweight

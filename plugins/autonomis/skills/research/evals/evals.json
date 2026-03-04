@@ -1,0 +1,25 @@
+{
+  "skill_name": "research",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Here are research notes from our Researcher agent (see attached file). We needed to know the best way to implement rate limiting for our API. Synthesize: answer the knowledge gap, give 2–3 actionable patterns, list gotchas with solutions, and add references. Then update .autonomis/state or memory with the research reference.",
+      "expected_output": "Structured output: Findings (3–5 bullets), Synthesis (knowledge gap answered, recommended approach, patterns to apply, gotchas to avoid, references). Memory update to .autonomis/state or .autonomis/memory/ with research reference. Format matches skill (Findings + Synthesis sections).",
+      "files": [],
+      "expectations": [
+        "Output includes Findings or Synthesis section (or equivalent structured synthesis)",
+        "Output references .autonomis/state or .autonomis/memory or research reference"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm passing you the contents of .autonomis/research/auth-options.md. We were deciding between session cookies and JWTs. Synthesize the findings into a short answer plus patterns and gotchas, and note where we should store this for the Planner.",
+      "expected_output": "Findings and Synthesis sections; knowledge gap (session vs JWT) answered; patterns and gotchas; note about updating .autonomis/state or memory for Planner.",
+      "files": [],
+      "expectations": [
+        "Output includes Findings or Synthesis section (or equivalent structured synthesis)",
+        "Output references .autonomis/state or .autonomis/memory or research reference"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,581 @@
+{
+  "exit_reason": "max_iterations (2)",
+  "original_description": "Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify \"tests pass\" or \"lint is clean\" \u2014 for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that \"done\" is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.",
+  "best_description": "Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify \"tests pass\" or \"lint is clean\" \u2014 for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that \"done\" is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.",
+  "best_score": "4/7",
+  "best_train_score": "8/13",
+  "best_test_score": "4/7",
+  "final_description": "Use this skill to discover and execute test/lint/build commands for verification and investigation. Trigger when you need to actually RUN commands to get evidence rather than assume success, especially for: verifying claims before merging/completion (\"implementer says done, but run the tests\"), investigating CI failures (\"CI is red, run tests locally to see what failed\"), discovering project commands (\"find and run this repo's test commands\"), or providing structured evidence with exit codes and summaries. Multi-language support (Node, Python, Go, Rust, Make). Use when you need proof, not promises - when \"done\" must be backed by actual command execution and evidence capture.",
+  "iterations_run": 2,
+  "holdout": 0.4,
+  "train_size": 13,
+  "test_size": 7,
+  "history": [
+    {
+      "iteration": 1,
+      "description": "Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify \"tests pass\" or \"lint is clean\" \u2014 for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that \"done\" is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.",
+      "train_passed": 8,
+      "train_failed": 5,
+      "train_total": 13,
+      "train_results": [
+        {
+          "query": "this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] \u2192 exit [code]: [summary]",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "implementer says the feature is done. don't trust that \u2014 run the test and lint commands yourself and show me the evidence so we can gate the merge.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "before we merge this pr i need to verify nothing is broken. run the project's tests and lint and give me the evidence \u2014 command run, exit code, and one-line summary for each. no 'looks good' without running.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "review this Dockerfile and tell me if the test stage is correct.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i have a vitest config that's ignoring some files. help me fix the glob so all relevant tests are run.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the deploy failed because a test timed out. where do we set the timeout for jest?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "tests are flaky \u2014 sometimes they pass sometimes they fail. how do i debug that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "explain how npm test and npm run lint work in a typical node project.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what's the best approach?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 3,
+      "test_total": 7,
+      "test_results": [
+        {
+          "query": "we just added a new helper in src/utils/format.ts. run tests and lint to confirm nothing broke. i need to see actual exit codes and output summary.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "check if the python project here (pyproject.toml or setup.py) passes its tests and lint. find the commands, run them, and report back with pass/fail and evidence.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "i need to verify tests pass and lint is clean before marking this task complete. what commands should i run and what evidence format do you need?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "add a new npm script in package.json that runs the linter with --fix.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the build is broken and i need to fix it. can you help me debug the failing tests?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we want to add pre-commit hooks that run tests. what's the best way to do that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "create a github action workflow that runs tests and lint on every pr.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 8,
+      "failed": 5,
+      "total": 13,
+      "results": [
+        {
+          "query": "this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] \u2192 exit [code]: [summary]",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "implementer says the feature is done. don't trust that \u2014 run the test and lint commands yourself and show me the evidence so we can gate the merge.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "before we merge this pr i need to verify nothing is broken. run the project's tests and lint and give me the evidence \u2014 command run, exit code, and one-line summary for each. no 'looks good' without running.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "review this Dockerfile and tell me if the test stage is correct.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i have a vitest config that's ignoring some files. help me fix the glob so all relevant tests are run.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the deploy failed because a test timed out. where do we set the timeout for jest?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "tests are flaky \u2014 sometimes they pass sometimes they fail. how do i debug that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "explain how npm test and npm run lint work in a typical node project.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what's the best approach?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "iteration": 2,
+      "description": "Use this skill to discover and execute test/lint/build commands for verification and investigation. Trigger when you need to actually RUN commands to get evidence rather than assume success, especially for: verifying claims before merging/completion (\"implementer says done, but run the tests\"), investigating CI failures (\"CI is red, run tests locally to see what failed\"), discovering project commands (\"find and run this repo's test commands\"), or providing structured evidence with exit codes and summaries. Multi-language support (Node, Python, Go, Rust, Make). Use when you need proof, not promises - when \"done\" must be backed by actual command execution and evidence capture.",
+      "train_passed": 8,
+      "train_failed": 5,
+      "train_total": 13,
+      "train_results": [
+        {
+          "query": "multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] \u2192 exit [code]: [summary]",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "implementer says the feature is done. don't trust that \u2014 run the test and lint commands yourself and show me the evidence so we can gate the merge.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "before we merge this pr i need to verify nothing is broken. run the project's tests and lint and give me the evidence \u2014 command run, exit code, and one-line summary for each. no 'looks good' without running.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "review this Dockerfile and tell me if the test stage is correct.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i have a vitest config that's ignoring some files. help me fix the glob so all relevant tests are run.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the deploy failed because a test timed out. where do we set the timeout for jest?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "tests are flaky \u2014 sometimes they pass sometimes they fail. how do i debug that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "explain how npm test and npm run lint work in a typical node project.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what's the best approach?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "test_passed": 4,
+      "test_failed": 3,
+      "test_total": 7,
+      "test_results": [
+        {
+          "query": "we just added a new helper in src/utils/format.ts. run tests and lint to confirm nothing broke. i need to see actual exit codes and output summary.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "check if the python project here (pyproject.toml or setup.py) passes its tests and lint. find the commands, run them, and report back with pass/fail and evidence.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "i need to verify tests pass and lint is clean before marking this task complete. what commands should i run and what evidence format do you need?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "add a new npm script in package.json that runs the linter with --fix.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the build is broken and i need to fix it. can you help me debug the failing tests?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we want to add pre-commit hooks that run tests. what's the best way to do that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "create a github action workflow that runs tests and lint on every pr.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ],
+      "passed": 8,
+      "failed": 5,
+      "total": 13,
+      "results": [
+        {
+          "query": "multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] \u2192 exit [code]: [summary]",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "implementer says the feature is done. don't trust that \u2014 run the test and lint commands yourself and show me the evidence so we can gate the merge.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "before we merge this pr i need to verify nothing is broken. run the project's tests and lint and give me the evidence \u2014 command run, exit code, and one-line summary for each. no 'looks good' without running.",
+          "should_trigger": true,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": false
+        },
+        {
+          "query": "review this Dockerfile and tell me if the test stage is correct.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "i have a vitest config that's ignoring some files. help me fix the glob so all relevant tests are run.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "the deploy failed because a test timed out. where do we set the timeout for jest?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "tests are flaky \u2014 sometimes they pass sometimes they fail. how do i debug that?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "explain how npm test and npm run lint work in a typical node project.",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        },
+        {
+          "query": "we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what's the best approach?",
+          "should_trigger": false,
+          "trigger_rate": 0.0,
+          "triggers": 0,
+          "runs": 3,
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

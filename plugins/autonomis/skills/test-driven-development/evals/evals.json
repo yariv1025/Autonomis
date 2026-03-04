@@ -1,0 +1,25 @@
+{
+  "skill_name": "test-driven-development",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a function that validates an email format (must have @ and a non-empty part after @). Use TDD: write the failing test first, run it and confirm it fails, then implement the minimal code to pass, then run again. Show me the RED phase (command + exit 1 + output) and GREEN phase (command + exit 0 + output).",
+      "expected_output": "Test file written first; RED phase shown with command and exit code 1 and failure output; then implementation; GREEN phase shown with command and exit code 0. Evidence format: [command] → exit [code]: [result].",
+      "files": [],
+      "expectations": [
+        "Output shows RED phase (failing test, exit 1) and GREEN phase (passing test, exit 0) or equivalent evidence",
+        "Output includes test run evidence (command, exit code, or test output)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We need to fix the bug where empty string is accepted as a valid username. Follow RED–GREEN–REFACTOR: add a failing test for empty string, run it (must fail), then add the check, run again (must pass). Report both runs with evidence.",
+      "expected_output": "Failing test for empty username; run shows exit 1; then minimal fix; run shows exit 0. No production fix before the failing test is run.",
+      "files": [],
+      "expectations": [
+        "Output shows RED phase (failing test, exit 1) and GREEN phase (passing test, exit 0) or equivalent evidence",
+        "Output includes test run evidence (command, exit code, or test output)"
+      ]
+    }
+  ]
+}

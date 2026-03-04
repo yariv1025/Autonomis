@@ -1,0 +1,25 @@
+{
+  "skill_name": "debugging-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Users are seeing 'Invalid token' when they try to access the dashboard after login. Don't suggest any code changes yet — gather evidence first: what's the error, stack trace if any, reproduction steps, and where in the flow it breaks. Then form one testable hypothesis.",
+      "expected_output": "No fix or code change proposed. Output includes: error message, stack trace or logs, reproduction steps, evidence from data flow. One testable hypothesis stated. Router Contract STATUS (INVESTIGATING or similar) and Memory Notes. Follows root-cause-first; log-first.",
+      "files": [],
+      "expectations": [
+        "Output includes investigation or evidence (error, stack trace, reproduction, or command/exit code)",
+        "Output includes a hypothesis or root cause before any fix, or fix is explicitly after investigation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The tests for the new validator are failing. Before writing a fix, investigate: what's failing, why, and what's the root cause? Show evidence (command run, exit code, output). Only after that suggest a minimal fix with a regression test.",
+      "expected_output": "Investigation section first (evidence, root cause, hypothesis). Then implementation with failing regression test (RED) then fix (GREEN). No fix before root cause and evidence. Evidence format [command] → exit [code]: [summary]. STATUS and Memory Notes.",
+      "files": [],
+      "expectations": [
+        "Output includes investigation or evidence (error, stack trace, reproduction, or command/exit code)",
+        "Output includes a hypothesis or root cause before any fix, or fix is explicitly after investigation"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "skill_name": "session-memory",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Session is starting. Load any existing state and memory from .autonomis/ that's relevant to the current project (we're working on the auth feature). If nothing exists yet, create the .autonomis layout (state, memory, runs, research) and say what you loaded or created.",
+      "expected_output": "Read from .autonomis/state/ and .autonomis/memory/ (or create dirs if missing). Report what was loaded; if creating, use mkdir and Write. Selective loading: only auth-related scope if filtering.",
+      "files": [],
+      "expectations": [
+        "Output references .autonomis/state or .autonomis/memory or reports what was loaded/created",
+        "Output is non-empty and describes state load, update, or directory creation"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We just finished the login work unit. Update .autonomis/state/ with the current phase and next steps. Use Edit on existing files with stable anchors; then Read back to verify. Don't overwrite unrelated sections.",
+      "expected_output": "Edit applied to state file(s) under .autonomis/state/; Read performed to verify. Stable section anchors used; no rename of existing headers.",
+      "files": [],
+      "expectations": [
+        "Output references .autonomis/state or .autonomis/memory or reports what was loaded/created",
+        "Output is non-empty and describes state load, update, or directory creation"
+      ]
+    }
+  ]
+}

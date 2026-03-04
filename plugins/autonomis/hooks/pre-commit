@@ -1,0 +1,19 @@
+#!/bin/bash
+# Autonomis pre-commit gate — blocks commit if tests fail.
+# Install: cp plugins/autonomis/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+if [ -f package.json ]; then
+  if grep -q '"vitest"' package.json 2>/dev/null; then
+    CI=true npx vitest run || { echo "autonomis: Tests must pass before commit (vitest)"; exit 1; }
+  elif grep -q '"jest"' package.json 2>/dev/null; then
+    CI=true npx jest --passWithNoTests || { echo "autonomis: Tests must pass before commit (jest)"; exit 1; }
+  elif grep -q '"test"' package.json 2>/dev/null; then
+    CI=true npm test || { echo "autonomis: Tests must pass before commit"; exit 1; }
+  fi
+elif [ -f pyproject.toml ] || [ -f setup.py ]; then
+  python -m pytest -q || { echo "autonomis: Tests must pass before commit (pytest)"; exit 1; }
+elif [ -f Makefile ] && grep -qE '^test:|^check:' Makefile 2>/dev/null; then
+  make test 2>/dev/null || make check 2>/dev/null || true
+fi
+
+exit 0

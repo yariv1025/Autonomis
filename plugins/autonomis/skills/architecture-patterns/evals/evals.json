@@ -1,0 +1,25 @@
+{
+  "skill_name": "architecture-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're adding a user settings page: change display name, change email, change password. Design the architecture — what flows, what components, what APIs? Start from what the user does, then map to components.",
+      "expected_output": "Flows mapped first (user actions step-by-step), then each step mapped to components (routes, endpoints, services, DB). Output includes functionality summary, flows, components table (purpose, inputs, outputs, dependencies), API endpoints, key decisions with trade-offs, implementation roadmap (critical/important/enhancement). Performance and security addressed.",
+      "files": [],
+      "expectations": [
+        "Output includes flows or component mapping (user actions and/or API/components)",
+        "Output includes design decisions, trade-offs, or implementation guidance"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Design the backend for a simple file upload feature: user picks file, we validate type/size, store in blob storage, save metadata in DB, return URL. Map flows then components.",
+      "expected_output": "Flow-first design: user flow steps then mapping to API, services, storage, DB. Components table; API design; decisions with trade-offs; N+1/blocking/unbounded growth considered.",
+      "files": [],
+      "expectations": [
+        "Output includes flows or component mapping (user actions and/or API/components)",
+        "Output includes design decisions, trade-offs, or implementation guidance"
+      ]
+    }
+  ]
+}

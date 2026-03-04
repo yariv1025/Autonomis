@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>validator — Skill Description Optimization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lora', Georgia, serif;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #faf9f5;
+            color: #141413;
+        }
+        h1 { font-family: 'Poppins', sans-serif; color: #141413; }
+        .explainer {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e8e6dc;
+            color: #b0aea5;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .summary {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e8e6dc;
+        }
+        .summary p { margin: 5px 0; }
+        .best { color: #788c5d; font-weight: bold; }
+        .table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+        table {
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid #e8e6dc;
+            border-radius: 6px;
+            font-size: 12px;
+            min-width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #e8e6dc;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        th {
+            font-family: 'Poppins', sans-serif;
+            background: #141413;
+            color: #faf9f5;
+            font-weight: 500;
+        }
+        th.test-col {
+            background: #6a9bcc;
+        }
+        th.query-col { min-width: 200px; }
+        td.description {
+            font-family: monospace;
+            font-size: 11px;
+            word-wrap: break-word;
+            max-width: 400px;
+        }
+        td.result {
+            text-align: center;
+            font-size: 16px;
+            min-width: 40px;
+        }
+        td.test-result {
+            background: #f0f6fc;
+        }
+        .pass { color: #788c5d; }
+        .fail { color: #c44; }
+        .rate {
+            font-size: 9px;
+            color: #b0aea5;
+            display: block;
+        }
+        tr:hover { background: #faf9f5; }
+        .score {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .score-good { background: #eef2e8; color: #788c5d; }
+        .score-ok { background: #fef3c7; color: #d97706; }
+        .score-bad { background: #fceaea; color: #c44; }
+        .train-label { color: #b0aea5; font-size: 10px; }
+        .test-label { color: #6a9bcc; font-size: 10px; font-weight: bold; }
+        .best-row { background: #f5f8f2; }
+        th.positive-col { border-bottom: 3px solid #788c5d; }
+        th.negative-col { border-bottom: 3px solid #c44; }
+        th.test-col.positive-col { border-bottom: 3px solid #788c5d; }
+        th.test-col.negative-col { border-bottom: 3px solid #c44; }
+        .legend { font-family: 'Poppins', sans-serif; display: flex; gap: 20px; margin-bottom: 10px; font-size: 13px; align-items: center; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-swatch { width: 16px; height: 16px; border-radius: 3px; display: inline-block; }
+        .swatch-positive { background: #141413; border-bottom: 3px solid #788c5d; }
+        .swatch-negative { background: #141413; border-bottom: 3px solid #c44; }
+        .swatch-test { background: #6a9bcc; }
+        .swatch-train { background: #141413; }
+    </style>
+</head>
+<body>
+    <h1>validator — Skill Description Optimization</h1>
+    <div class="explainer">
+        <strong>Optimizing your skill's description.</strong> This page updates automatically as Claude tests different versions of your skill's description. Each row is an iteration — a new description attempt. The columns show test queries: green checkmarks mean the skill triggered correctly (or correctly didn't trigger), red crosses mean it got it wrong. The "Train" score shows performance on queries used to improve the description; the "Test" score shows performance on held-out queries the optimizer hasn't seen. When it's done, Claude will apply the best-performing description to your skill.
+    </div>
+
+    <div class="summary">
+        <p><strong>Original:</strong> Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify &quot;tests pass&quot; or &quot;lint is clean&quot; — for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that &quot;done&quot; is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.</p>
+        <p class="best"><strong>Best:</strong> Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify &quot;tests pass&quot; or &quot;lint is clean&quot; — for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that &quot;done&quot; is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.</p>
+        <p><strong>Best Score:</strong> 4/7 (test)</p>
+        <p><strong>Iterations:</strong> 2 | <strong>Train:</strong> 13 | <strong>Test:</strong> 7</p>
+    </div>
+
+    <div class="legend">
+        <span style="font-weight:600">Query columns:</span>
+        <span class="legend-item"><span class="legend-swatch swatch-positive"></span> Should trigger</span>
+        <span class="legend-item"><span class="legend-swatch swatch-negative"></span> Should NOT trigger</span>
+        <span class="legend-item"><span class="legend-swatch swatch-train"></span> Train</span>
+        <span class="legend-item"><span class="legend-swatch swatch-test"></span> Test</span>
+    </div>
+
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Iter</th>
+                <th>Train</th>
+                <th>Test</th>
+                <th class="query-col">Description</th>
+                <th class="positive-col">this is a node app with package.json in the root. discover how to run tests and lint, run them, and report pass/fail with the evidence format [command] → exit [code]: [summary]</th>
+                <th class="positive-col">implementer says the feature is done. don&#x27;t trust that — run the test and lint commands yourself and show me the evidence so we can gate the merge.</th>
+                <th class="positive-col">multi-language repo: we have a go service and a node frontend. discover and run test/lint for both and give me a single report with STATUS and EVIDENCE for each.</th>
+                <th class="positive-col">our ci is red because tests are failing on main. can you find the test and lint commands for this repo and run them, then tell me exactly what failed with the exit codes and a short summary?</th>
+                <th class="positive-col">before we merge this pr i need to verify nothing is broken. run the project&#x27;s tests and lint and give me the evidence — command run, exit code, and one-line summary for each. no &#x27;looks good&#x27; without running.</th>
+                <th class="negative-col">review this Dockerfile and tell me if the test stage is correct.</th>
+                <th class="negative-col">i have a vitest config that&#x27;s ignoring some files. help me fix the glob so all relevant tests are run.</th>
+                <th class="negative-col">write a script that discovers test and lint from package.json or Makefile and runs them, returning structured json with pass/fail and evidence.</th>
+                <th class="negative-col">our ci runs pytest and ruff. can you add a section to the readme that documents how to run tests and lint locally?</th>
+                <th class="negative-col">the deploy failed because a test timed out. where do we set the timeout for jest?</th>
+                <th class="negative-col">tests are flaky — sometimes they pass sometimes they fail. how do i debug that?</th>
+                <th class="negative-col">explain how npm test and npm run lint work in a typical node project.</th>
+                <th class="negative-col">we need a single command that runs tests, lint, and typecheck and exits non-zero if any fail. what&#x27;s the best approach?</th>
+                <th class="test-col positive-col">we just added a new helper in src/utils/format.ts. run tests and lint to confirm nothing broke. i need to see actual exit codes and output summary.</th>
+                <th class="test-col positive-col">check if the python project here (pyproject.toml or setup.py) passes its tests and lint. find the commands, run them, and report back with pass/fail and evidence.</th>
+                <th class="test-col positive-col">i need to verify tests pass and lint is clean before marking this task complete. what commands should i run and what evidence format do you need?</th>
+                <th class="test-col negative-col">add a new npm script in package.json that runs the linter with --fix.</th>
+                <th class="test-col negative-col">the build is broken and i need to fix it. can you help me debug the failing tests?</th>
+                <th class="test-col negative-col">we want to add pre-commit hooks that run tests. what&#x27;s the best way to do that?</th>
+                <th class="test-col negative-col">create a github action workflow that runs tests and lint on every pr.</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="best-row">
+                <td>1</td>
+                <td><span class="score score-ok">24/39</span></td>
+                <td><span class="score score-ok">12/21</span></td>
+                <td class="description">Discover and run project test/lint/build commands, then parse results into structured evidence. Use whenever the user or workflow needs to verify &quot;tests pass&quot; or &quot;lint is clean&quot; — for any language or stack (Node, Python, Go, Rust, Make, etc.). Use this skill so that &quot;done&quot; is backed by exit codes and output, not by assumption. No PASS without running the commands and capturing evidence.</td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+            </tr>
+            <tr class="">
+                <td>2</td>
+                <td><span class="score score-ok">24/39</span></td>
+                <td><span class="score score-ok">12/21</span></td>
+                <td class="description">Use this skill to discover and execute test/lint/build commands for verification and investigation. Trigger when you need to actually RUN commands to get evidence rather than assume success, especially for: verifying claims before merging/completion (&quot;implementer says done, but run the tests&quot;), investigating CI failures (&quot;CI is red, run tests locally to see what failed&quot;), discovering project commands (&quot;find and run this repo&#x27;s test commands&quot;), or providing structured evidence with exit codes and summaries. Multi-language support (Node, Python, Go, Rust, Make). Use when you need proof, not promises - when &quot;done&quot; must be backed by actual command execution and evidence capture.</td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result fail">✗<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result fail">✗<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+                <td class="result test-result pass">✓<span class="rate">0/3</span></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+</body>
+</html>

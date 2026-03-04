@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "description": "Autonomis hooks: session start (load state), pre-compact (persist state), pre-commit (review gate), plan-review-owasp (suggest OWASP skills).",
+  "hooks": {
+    "sessionStart": [
+      {
+        "description": "Load state from .autonomis/ so orchestrator can resume; see session-start.md"
+      }
+    ],
+    "preCompact": [
+      {
+        "description": "Persist state to .autonomis/runs/<runId>/ before compaction; see pre-compact.md (FLAW-001 mitigation)"
+      }
+    ],
+    "preCommit": [
+      {
+        "command": "./pre-commit",
+        "description": "Optional: ensure only reviewed work is committed; install to .git/hooks/pre-commit"
+      }
+    ],
+    "planReviewOwasp": [
+      {
+        "description": "After Plan phase: suggest domain OWASP skills from plan keywords; see plan-review-owasp.md"
+      }
+    ]
+  }
+}

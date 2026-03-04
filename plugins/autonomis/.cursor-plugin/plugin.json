@@ -1,0 +1,25 @@
+{
+  "name": "autonomis",
+  "displayName": "Autonomis",
+  "version": "0.1.0",
+  "description": "SDLC-driven orchestration for Claude Code and Cursor: Research → Plan → Design Review → Execution Loop → PR → Learning. Security-first (OWASP Top 10) and performance-first. Single parameterized workflow with intents BUILD, DEBUG, REVIEW, PLAN.",
+  "author": {
+    "name": "Autonomis Contributors"
+  },
+  "repository": "https://github.com/yariv1025/Autonomis",
+  "license": "MIT",
+  "keywords": [
+    "sdlc",
+    "orchestration",
+    "owasp",
+    "security",
+    "tdd",
+    "planning",
+    "design-review",
+    "claude-code",
+    "cursor"
+  ],
+  "agents": "./agents/",
+  "skills": "./skills/",
+  "hooks": "./hooks/"
+}

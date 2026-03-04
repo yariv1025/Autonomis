@@ -1,0 +1,11 @@
+{
+  "name": "email-validation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npx vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.0"
+  }
+}

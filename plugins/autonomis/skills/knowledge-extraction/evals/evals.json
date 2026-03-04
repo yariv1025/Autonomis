@@ -1,0 +1,25 @@
+{
+  "skill_name": "knowledge-extraction",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We just finished implementing auth: JWT in cookies, validation in middleware, and we hit a gotcha where the secret must be in env not in code. Extract learnings: one pattern, one gotcha, one decision. Write them to .autonomis/memory/ under stable sections (## Learnings, ## Common Gotchas, ## Decisions). Use Edit to append; keep each entry one line; include a tag or path so we can filter by scope later.",
+      "expected_output": "Entries appended under ## Learnings, ## Common Gotchas, ## Decisions in .autonomis/memory/. Each entry brief, with tag/path for scope. Edit + Read-back verify; section headers unchanged.",
+      "files": [],
+      "expectations": [
+        "Output references .autonomis/memory or Learnings/Decisions/Gotchas sections",
+        "Output includes at least one extracted learning, decision, or gotcha (or evidence of append)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "After this refactor we decided to use a single API client module and we learned that timeouts need to be set per-request. Add these to .autonomis/memory/ in the right sections without removing or renaming existing content.",
+      "expected_output": "New entries added under appropriate sections (e.g. ## Decisions, ## Common Gotchas). Append only; stable anchors; brief, index-style entries.",
+      "files": [],
+      "expectations": [
+        "Output references .autonomis/memory or Learnings/Decisions/Gotchas sections",
+        "Output includes at least one extracted learning, decision, or gotcha (or evidence of append)"
+      ]
+    }
+  ]
+}

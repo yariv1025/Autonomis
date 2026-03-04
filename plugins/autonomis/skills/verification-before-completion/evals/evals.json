@@ -1,0 +1,25 @@
+{
+  "skill_name": "verification-before-completion",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm about to tell the user we're done with the login feature. Before I do, what do I need to do to back that up with evidence? Then do it: run whatever proves tests and lint pass and show me the evidence format.",
+      "expected_output": "Identify test/lint commands, run them, then state completion with evidence in format [command] → exit [code]: [result summary]. No 'done' claim without running the commands.",
+      "files": [],
+      "expectations": [
+        "Output includes evidence of running test or lint (exit code or command result)",
+        "No completion or PASS claim without showing run evidence"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The implementer just finished changing the API client. Don't say we're done until you've run the tests and lint and can show exit codes and a one-line summary for each.",
+      "expected_output": "Run test and lint commands; output includes evidence lines in the required format. Completion claim only after evidence is shown.",
+      "files": [],
+      "expectations": [
+        "Output includes evidence of running test or lint (exit code or command result)",
+        "No completion or PASS claim without showing run evidence"
+      ]
+    }
+  ]
+}
