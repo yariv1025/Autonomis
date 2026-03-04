@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p .autonomis/state)",
+      "Bash(mkdir -p .autonomis/runs)",
+      "Bash(mkdir -p .autonomis/memory)",
+      "Bash(mkdir -p .autonomis/research)",
+      "Edit(.autonomis/*)",
+      "Write(.autonomis/*)"
+    ]
+  }
+}

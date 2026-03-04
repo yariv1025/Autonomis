@@ -1,26 +1,227 @@
 # Autonomis
 
-**A dual-platform (Claude Code + Cursor) plugin for agentic development:** one SDLC-driven workflow—Research → Plan → Design Review → Execution Loop → PR → Learning—with security (OWASP Top 10) and performance built in from the start.
+### SDLC Orchestrator for Claude Code & Cursor
 
 **Current version:** 0.1.0
 
+**Recommended:** Create `~/.claude/CLAUDE.md` (Claude Code) or add project instructions via **AGENTS.md** (Cursor) so the router is active for development tasks.
+
+<p align="center">
+  <strong>1 Router</strong> &nbsp;•&nbsp; <strong>9 Agents</strong> &nbsp;•&nbsp; <strong>11 Skills</strong> &nbsp;•&nbsp; <strong>4 Hooks</strong>
+</p>
+
+<p align="center">
+  <em>You say what you want. The router runs the right phase.</em>
+</p>
+
 ---
 
-## What Autonomis Does
+## The Problem With Ad-Hoc Agent Use
 
-- **Single entry point:** A router detects intent (START, PLAN, BUILD, DEBUG, REVIEW) and runs the right phase or full pipeline.
-- **Deterministic execution loop:** Implement → Validate → (on fail) Debug → Validate → (on pass) Code Review. Fixed order; iteration cap and human escalation when validation keeps failing.
-- **Security and performance first:** Design Review and Code Review must use OWASP Top 10 and a performance rubric; no sign-off without them.
-- **File-based state:** Everything under `.autonomis/` (state, runs, memory, research). Optional beads-backed task store later.
-- **Compaction-safe:** Pre-compact hook writes state to disk; session start loads it; recovery path when sub-agent output is lost (see [docs/known-flaws.md](docs/known-flaws.md)).
+Many agent setups leave you to guess:
+
+```
+❌ When to plan vs when to build
+❌ Skipping design or security review to "move fast"
+❌ No single entry point — you pick skills or agents manually
+❌ Context lost on compaction; no recovery path
+❌ No enforcement of OWASP or performance before sign-off
+```
+
+**Autonomis is different.** One router detects your intent and runs the full SDLC or the right phase. Security (OWASP Top 10) and performance are gates, not afterthoughts. State lives under `.autonomis/` and survives compaction.
 
 ---
 
 ## How It Works
 
-### High-Level Architecture
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  YOU: "build a login flow" / "debug the failing test" / "review this PR"   │
+│                              ┌──────────────────────────────────────────┐   │
+│                       ┌──────►  Research → Plan → Design Review         │   │
+│                       │      │  (OWASP + performance gates)             │   │
+│   ┌─────────────────┐  │      └───────────────────┬──────────────────────┘   │
+│   │                 │  │                          │                          │
+│   │     Router      │──┼──────►  BUILD/DEBUG ──► Execution Loop              │
+│   │  (only entry    │  │        (Implement → Validate → Debug → Review)      │
+│   │   point)        │  │                          │                          │
+│   └─────────────────┘  │      ┌───────────────────▼──────────────────────┐   │
+│                       └──────►  PR → Learning                             │   │
+│                              │  (memory updated for next session)         │   │
+│                              └───────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
-The Router is the only entry point. It detects your intent and either runs the full SDLC or jumps to a specific phase. The full pipeline is: **Research → Plan → Design Review → Execution Loop → PR → Learning**. The Execution Loop is deterministic (fixed order: Implement → Validate → on failure, Debug → Validate again → on pass, Review).
+**You say what you want. Autonomis figures out the rest.**
+
+---
+
+## 👤 FOR HUMANS: Read This
+
+### Step 1: Install the plugin
+
+**Claude Code:**
+
+```bash
+/plugin marketplace add yariv1025/Autonomis
+/plugin install autonomis@yariv1025-autonomis
+```
+
+**Cursor:**
+
+Clone the repo and add `plugins/autonomis` as a local plugin (it contains `.cursor-plugin/plugin.json`). See Cursor docs for "Add plugin from folder" or "Local plugin."
+
+### Step 2: Set up the router
+
+In Claude Code or Cursor, say: **"Set up Autonomis for me"**
+
+The assistant will add the router to your global instructions and pre-approve `.autonomis/` so the plugin can persist state without prompting every time.
+
+### Step 3: Restart your IDE
+
+Done.
+
+---
+
+## 🤖 FOR CLAUDE CODE / CURSOR: Execute This
+
+**When the user says "set up Autonomis", "install Autonomis", or similar:**
+
+- **Claude Code:** Follow the steps in [CLAUDE.md](CLAUDE.md): update `~/.claude/CLAUDE.md` with the Autonomis router entry and merge the `.autonomis/` permissions into `~/.claude/settings.json`. Use [claude-settings-template.json](claude-settings-template.json) for the exact lines.
+- **Cursor:** Cursor uses **AGENTS.md** (and/or `.cursor/rules/`), not CLAUDE.md. Follow the "Set up Autonomis for me" flow in [AGENTS.md](AGENTS.md) and add the provided snippet to the user's project.
+
+Then confirm: *"Autonomis is set up. Restart Claude Code / Cursor to activate."*
+
+---
+
+## The 5 Intents
+
+| Intent | Trigger words | What happens |
+|--------|----------------|--------------|
+| **START** | start, full pipeline, run the whole thing | Research → Plan → Design Review → Execution Loop → PR → Learning |
+| **PLAN** | plan, design, architect, roadmap, strategy | Plan phase: decomposition, DoD, security/performance in scope |
+| **BUILD** | build, implement, create, make, add | Execution Loop: Implement → Validate → Debug → Review (TDD, OWASP gates) |
+| **DEBUG** | debug, fix, error, bug, broken | Execution Loop with log-first investigation, then fix and validate |
+| **REVIEW** | review, audit, check, assess | Design Review or Code Review with OWASP Top 10 + performance rubric |
+
+---
+
+## What Makes Autonomis Different
+
+<table>
+<tr>
+<td width="50%">
+
+### Without Autonomis
+
+```
+❌ You choose plan vs build vs review
+❌ Security and performance checked "later"
+❌ No single entry point; skills used ad hoc
+❌ State lost on compaction; no recovery
+❌ No enforcement of verification before sign-off
+```
+
+</td>
+<td width="50%">
+
+### With Autonomis
+
+```
+✓ Router picks the right phase from your intent
+✓ OWASP + performance gates before sign-off
+✓ One entry point: router only
+✓ .autonomis/ state; pre-compact hook persists
+✓ Deterministic loop: Implement → Validate → Review
+```
+
+</td>
+</tr>
+</table>
+
+---
+
+## Quick Start Examples
+
+### Build something
+
+```
+"build a login flow"
+
+→ Router detects BUILD intent
+→ Full SDLC or jump to Execution Loop
+→ Implementer (TDD) → Validator → on fail: Debug Investigator → Code Reviewer
+→ OWASP + performance rubric before sign-off
+→ Memory updated in .autonomis/
+```
+
+### Fix a bug
+
+```
+"debug the failing test"
+
+→ Router detects DEBUG intent
+→ Execution Loop: log-first investigation, fix, validate, review
+→ Added to memory for next session
+```
+
+### Review code
+
+```
+"review this branch"
+
+→ Router detects REVIEW intent
+→ Design Review or Code Review with OWASP Top 10 and performance rubric
+→ No sign-off without evidence
+```
+
+### Plan first
+
+```
+"plan a settings page"
+
+→ Router detects PLAN intent
+→ Planner: decomposition, DoD, security/performance in scope
+→ Design Review gate before build
+```
+
+---
+
+## Architecture
+
+```
+USER REQUEST
+     │
+     ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                 Autonomis Router (ONLY ENTRY POINT)              │
+│              Detects intent → Full SDLC or single phase           │
+└─────────────────────────────────────────────────────────────────┘
+     │
+     ├── START ──► Research → Plan → Design Review → Execution Loop → PR → Learning
+     │
+     ├── PLAN ───► Planner → (Design Review gate)
+     │
+     ├── BUILD ──► Execution Loop: Implement → Validate → Debug → Review
+     │
+     ├── DEBUG ──► Execution Loop (log-first)
+     │
+     └── REVIEW ─► Design Reviewer or Code Reviewer (OWASP + performance)
+
+STATE (.autonomis/)
+├── state/     ◄── Current phase, work units, router state
+├── runs/      ◄── Per-run snapshots (pre-compact recovery)
+├── memory/    ◄── Patterns, gotchas, learnings
+└── research/  ◄── Research outputs
+```
+
+---
+
+## High-Level Architecture (Diagram)
+
+Full pipeline: **Research → Plan → Design Review → Execution Loop → PR → Learning**. The Execution Loop is deterministic: Implement → Validate → (on fail) Debug → Validate → (on pass) Review.
+
+**Visual:** Open [autonomis-architecture-explorer.html](autonomis-architecture-explorer.html) in a browser for an interactive diagram.
 
 ```mermaid
 flowchart LR
@@ -51,156 +252,210 @@ flowchart LR
   Router -.->|REVIEW intent| DR
 ```
 
-- **Router** detects intent: **START** (full SDLC), **PLAN**, **BUILD**, **DEBUG**, **REVIEW**. It routes to the matching phase; e.g. PLAN → Plan phase, BUILD/DEBUG → Execution Loop, REVIEW → Design Review or code review inside Execution.
-- **Execution Loop** order is fixed: Implement → Validate → (on fail) Debug → Validate again → (on pass) Review. Only the content of each step is model-dependent; the pipeline itself is deterministic and testable.
-- **Design Review** and **Code Review** (inside Execution) both enforce OWASP Top 10 and a performance rubric before sign-off.
+---
 
-### From your perspective
+## The 9 Agents
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  YOU: "build a login flow" / "debug the failing test" / "review this PR"    │
-│                              ┌──────────────────────────────────────────┐   │
-│                       ┌──────►  Research → Plan → Design Review         │   │
-│                       │      │  (OWASP + performance gates)             │   │
-│                       │      └───────────────────┬──────────────────────┘   │
-│  ┌─────────────────┐  │                          │                          │
-│  │                 │  │      ┌───────────────────▼──────────────────────┐   │
-│  │                 │──┼──────►  BUILD/DEBUG/REVIEW ──► Execution Loop   │   │
-│  │     Router      │  │      │ (Implement → Validate → Debug → Review)  │   │
-│  │                 │  │      └───────────────────┬──────────────────────┘   │
-│  │                 │  │                          │                          │
-│  └─────────────────┘  │      ┌───────────────────▼──────────────────────┐   │
-│                       └──────►  PR → Learning                           │   │
-│                              │  (memory updated for next session)       │   │
-│                              └──────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-**You say what you want. The router runs the right phase and agents.**
+| Agent | Purpose | Key behavior |
+|-------|---------|--------------|
+| **Researcher** | Gather context and references | Feeds Plan and Design Review; outputs to `.autonomis/research/` |
+| **Planner** | Decompose work, define DoD | Plan phase; security/performance in scope |
+| **Design Reviewer** | Gate before build | OWASP Top 10 + performance rubric; no pass without evidence |
+| **Implementer** | Write code | TDD; follows plan and patterns |
+| **Validator** | Run tests, checks | Exit code 0 or it didn't happen; blocks until pass or escalation |
+| **Debug Investigator** | Find root cause | Log-first; then fix; then validate |
+| **Code Reviewer** | Review implementation | OWASP + performance; no sign-off without rubric |
+| **PR Shepherd** | PR phase | Handoff to human or automation |
+| **Learning** | Update memory | Writes patterns, gotchas, learnings to `.autonomis/memory/` |
 
 ---
 
-## Install
+## The 11 Skills
 
-The plugin is distributed via GitHub only. Install using Claude Code’s marketplace commands or by cloning and adding the plugin directory (Cursor).
+Skills are loaded by agents. You don't invoke them directly (except the router as entry point).
 
-### Claude Code
+| Skill | Used by | Purpose |
+|-------|---------|---------|
+| **router** | Entry point | Detects intent; routes to full SDLC or single phase |
+| **session-memory** | Stateful agents | Persist context across compaction; load/save `.autonomis/` |
+| **verification-before-completion** | All agents | Evidence before claims; no sign-off without validation |
+| **validator** | Execution Loop | Run tests and checks; pass/fail with evidence |
+| **test-driven-development** | Implementer, Debug Investigator | RED–GREEN–REFACTOR |
+| **code-review-patterns** | Code Reviewer, Design Reviewer | Security, quality, performance rubrics |
+| **planning-patterns** | Planner | Decomposition, DoD, scope |
+| **debugging-patterns** | Debug Investigator | Log-first; root cause analysis |
+| **architecture-patterns** | Multiple agents | System and API design |
+| **research** | Researcher, Planner | Synthesis and interpretation of research |
+| **knowledge-extraction** | Learning | Extract patterns and gotchas into memory |
 
-Add the repo as a marketplace, then install the plugin:
+---
 
-```bash
-/plugin marketplace add yariv1025/Autonomis
-/plugin install autonomis@yariv1025-autonomis
+## Memory & State
+
+Autonomis keeps everything under `.autonomis/` so state survives context compaction and session restarts.
+
+```
+.autonomis/
+├── state/       # Current phase, work units, router state
+├── runs/        # Per-run snapshots (pre-compact recovery; see docs/known-flaws.md)
+├── memory/      # Patterns, common gotchas, learnings
+└── research/    # Research outputs
 ```
 
-Then restart Claude Code.
-
-### Cursor
-
-1. **Clone the repo**:
-   ```bash
-   git clone https://github.com/yariv1025/Autonomis.git
-   cd Autonomis
-   ```
-2. **Add as a local plugin** — In Cursor, add `plugins/autonomis` as a local plugin (it contains `.cursor-plugin/plugin.json`). See Cursor docs for “Add plugin from folder” or “Local plugin”.
-
-### After install
-
-- **Optional:** Run interactive install (when implemented) to set IDE, project type, and OWASP suggestions.
-- **Optional:** Install the pre-commit hook:  
-  `cp plugins/autonomis/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
+**Iron rule:** Every workflow loads state at start and updates at end. The pre-compact hook writes state to disk before compaction so recovery is possible when sub-agent output is lost ([FLAW-001](docs/known-flaws.md)).
 
 ---
 
-## Quick Start
+## Hooks
 
-### Use the router
+| Hook | When | Purpose |
+|------|------|---------|
+| **session-start** | Session start | Load `.autonomis/` state and inject into context |
+| **pre-compact** | Before compaction | Write state to `.autonomis/runs/<runId>/` for recovery |
+| **pre-commit** | Before git commit | Optional: block unreviewed changes or run tests |
+| **plan-review-owasp** | After plan produced | Suggest OWASP skills based on plan keywords |
 
-Ask to build, plan, review, or debug. The router loads state from `.autonomis/` and runs the right phase.
-
-| You say… | Router does |
-|----------|-------------|
-| "Plan a settings page" | PLAN → Planner (decomposition, DoD, security/performance in scope) |
-| "Build the login flow" | BUILD → Execution Loop (Implement → Validate → Debug → Review) |
-| "Debug the failing test" | DEBUG → Execution Loop (log-first, then fix, then validate) |
-| "Review this branch" | REVIEW → Design Review or Code Review (OWASP + performance rubric) |
-
-### Runtime state
-
-The plugin creates and uses `.autonomis/` in your project root: state, runs, memory, research. See [.autonomis/README.md](.autonomis/README.md).
+Install pre-commit (optional):  
+`cp plugins/autonomis/hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
 
 ---
 
-## Layout
+## Expected Behavior
+
+### When you say "Build a login flow"
+
+**Autonomis response:**
+
+```
+Detected BUILD intent. Running Execution Loop (or full SDLC if you prefer).
+
+Loading state from .autonomis/...
+Implementer: TDD cycle (RED → GREEN → REFACTOR).
+Validator: running tests...
+[If fail] Debug Investigator: log-first, then fix, then validate again.
+Code Reviewer: OWASP Top 10 + performance rubric — no sign-off without evidence.
+Learning: updating memory.
+```
+
+**Without Autonomis:**
+
+```
+I'll help you build a login flow! Let me start...
+[Writes code without a gate]
+[May skip tests or security review]
+[No single entry point or state]
+```
+
+---
+
+## Version History
+
+| Version | Highlights |
+|---------|------------|
+| **v0.1.0** | Initial release: dual-platform (Claude Code + Cursor), 1 Router, 9 Agents, 11 Skills, 4 Hooks, `.autonomis/` state, OWASP + performance gates, compaction-safe hooks. |
+
+Full history: [CHANGELOG.md](CHANGELOG.md).
+
+---
+
+## Files Structure
 
 ```
 plugins/autonomis/
-├── .claude-plugin/plugin.json    # Claude Code manifest
-├── .cursor-plugin/plugin.json    # Cursor Marketplace manifest
-├── agents/                       # Planner, Implementer, Code Reviewer, etc.
-├── skills/                       # router, session-memory, validator, TDD, etc.
-├── hooks/                        # session-start, pre-compact, pre-commit, plan-review-owasp
-│   ├── hooks.json                # Hook registration (Cursor)
-│   ├── session-start.md
-│   ├── pre-compact.md
-│   ├── pre-commit                # Install to .git/hooks/pre-commit
-│   └── plan-review-owasp.md
-.autonomis/                       # Runtime state (created by plugin)
-docs/                             # known-flaws.md only (user-facing behavior)
-.agents/skills/skill-creator/     # Eval pipeline for contributors (see below)
+├── .claude-plugin/plugin.json
+├── .cursor-plugin/plugin.json
+├── agents/
+│   ├── researcher.md
+│   ├── planner.md
+│   ├── design-reviewer.md
+│   ├── implementer.md
+│   ├── integration-verifier.md
+│   ├── debug-investigator.md
+│   ├── code-reviewer.md
+│   ├── pr-shepherd.md
+│   └── learning.md
+├── skills/
+│   ├── router/
+│   ├── session-memory/
+│   ├── verification-before-completion/
+│   ├── validator/
+│   ├── test-driven-development/
+│   ├── code-review-patterns/
+│   ├── planning-patterns/
+│   ├── debugging-patterns/
+│   ├── architecture-patterns/
+│   ├── research/
+│   └── knowledge-extraction/
+└── hooks/
+    ├── hooks.json
+    ├── session-start.md
+    ├── pre-compact.md
+    ├── pre-commit
+    └── plan-review-owasp.md
 ```
 
-Eval workspaces (`plugins/autonomis/skills/*-workspace/`) are **not** in the repo; they are recreated when you run the eval pipeline locally.
+Repo root: [AGENTS.md](AGENTS.md) (Cursor), [CLAUDE.md](CLAUDE.md) (Claude Code), [CHANGELOG.md](CHANGELOG.md), [claude-settings-template.json](claude-settings-template.json), [autonomis-architecture-explorer.html](autonomis-architecture-explorer.html).
+
+Eval workspaces (`plugins/autonomis/skills/*-workspace/`) are gitignored and recreated locally when you run the eval pipeline.
 
 ---
 
 ## Evaluating Skills (For Contributors)
 
-You can run the full skill evaluation pipeline from this repo—for **personal use** (e.g. to check a skill) or to **contribute** improvements. The published plugin does not include eval workspaces or pipeline docs; you keep those locally.
+You can run the skill evaluation pipeline from this repo for personal use or to contribute. The plugin does not ship eval workspaces or pipeline docs; you keep those locally.
 
-### What’s in the repo
+- **In the repo:** Skill definitions under `plugins/autonomis/skills/<name>/` with `SKILL.md` and optional `evals/evals.json`. Eval tooling in `.agents/skills/skill-creator/`.
+- **Not in the repo:** `*-workspace/` dirs (gitignored), detailed pipeline docs, rubrics. Create workspaces when you run the pipeline.
 
-- **Skill definitions** — Each skill under `plugins/autonomis/skills/<name>/` has `SKILL.md` and optionally `evals/evals.json` (assertions).
-- **Eval tooling** — `.agents/skills/skill-creator/` contains scripts to run evals, grade runs, aggregate benchmarks, and generate the review HTML. Use the scripts with `--help` for usage; pipeline steps and timing capture are described in the skill-creator skill or in the script logic.
+**Run evals:** From `.agents/skills/skill-creator/`, use the scripts with `--skills-root` pointing at `plugins/autonomis/skills`. See script `--help` and the skill-creator skill for steps. Open generated `review.html` in the workspace to inspect outputs and benchmarks.
 
-### What’s not in the repo (stay local)
+### Testing the full plugin and comparing with other plugins (e.g. cc10x)
 
-- **Eval workspaces** — `plugins/autonomis/skills/<name>-workspace/` (e.g. `router-workspace/`, `validator-workspace/`) are **gitignored**. They hold iteration dirs, run outputs, grading, timing, benchmarks, and `review.html`. You create them when you run the pipeline.
-- **Pipeline and planning docs** — Detailed pipeline steps, rubrics, and comparison/feedback docs are not shipped; keep your own notes locally if you run evals.
+To **test Autonomis end-to-end** (router → agents → skills) in Claude Code or Cursor: install the plugin, run "Set up Autonomis for me", then try a few prompts (e.g. "build a small CLI…", "debug the failing test", "review this branch") and confirm the router runs, state goes to `.autonomis/`, and gates (OWASP, verification) appear as expected.
 
-### How to run evals
+To **compare Autonomis vs cc10x (or others)** on the same tasks: use the same prompts and project, run once with Autonomis and once with the other plugin, then grade both with the same rubric (intent correct, evidence, no bypass, gates). See **[docs/comparing-plugins.md](docs/comparing-plugins.md)** for a step-by-step guide (comparison tasks, run layout, rubric, and where to keep results).
 
-1. **Clone the repo** and ensure you have Python 3 and either the Anthropic API or the `claude` CLI.
-2. **API key vs CLI:** An **API key** is needed for token counts and full metrics in the benchmark. **Without an API key**, you can use the **Claude CLI** (`claude`); the pipeline then records **duration-only** timing (no token counts). Use the scripts with `--use-cli` (or the default when no API key is set) for CLI-based runs.
-3. **Add or use** `.agents/skills/skill-creator/` (from the [skill-creator](https://skills.sh/anthropics/skills/skill-creator) skill or your local copy).
-4. **Run from the skill-creator directory**, e.g.:
-   ```bash
-   cd .agents/skills/skill-creator
-   python3 -m scripts.run_all_content_evals --skills-root ../../plugins/autonomis/skills --timeout 90
-   # Then grade, aggregate, and generate review per iteration (see script --help and skill-creator docs).
-   ```
-5. **Open the generated viewer** at e.g. `plugins/autonomis/skills/<skill>-workspace/iteration-1/review.html` to review outputs and benchmarks.
+---
 
-Re-running evals: run the same pipeline; your local `*-workspace/` dirs are updated and stay untracked.
+## Troubleshooting
+
+### Claude Code keeps asking for permission to edit `.autonomis/`
+
+Merge the permissions from [claude-settings-template.json](claude-settings-template.json) into `~/.claude/settings.json` under `permissions.allow`, or say **"Set up Autonomis for me"** so the assistant adds them.
+
+### Router not activating
+
+- **Claude Code:** Ensure `~/.claude/CLAUDE.md` contains the Autonomis section with the router entry (see [CLAUDE.md](CLAUDE.md)). Restart Claude Code after editing.
+- **Cursor:** Ensure the project has an [AGENTS.md](AGENTS.md) (or `.cursor/rules` rule) with the "invoke Autonomis router first" instructions. Restart Cursor if needed.
+
+### State lost after compaction
+
+The pre-compact hook should write state to `.autonomis/runs/<runId>/`. If output was still lost, see [docs/known-flaws.md](docs/known-flaws.md) (FLAW-001) for the documented behavior and recovery path.
 
 ---
 
 ## Inspired By
 
-Autonomis synthesizes ideas from four open-source projects (all MIT-licensed), which we thank and recommend exploring:
+Autonomis builds on ideas from these open-source projects (MIT-licensed):
 
 | Project | What we drew from |
 |--------|---------------------|
-| **cc10x** ([github.com/romiluz13/cc10x](https://github.com/romiluz13/cc10x)) | Intent-based routing (BUILD/DEBUG/REVIEW/PLAN), router-as-single-entry-point, session memory and verification-before-completion disciplines, pre-compact state persistence and recovery (FLAW-001), pre-commit test gate. |
-| **babysitter** ([github.com/a5c-ai/babysitter](https://github.com/a5c-ai/babysitter)) | Hook-driven orchestration, human escalation and iteration caps, quality gates and process structure. |
-| **beads** ([github.com/steveyegge/beads](https://github.com/steveyegge/beads)) | Task and dependency model; Autonomis uses a file-based task store with an interface that allows an optional beads backend later. |
-| **metaswarm** ([github.com/dsifry/metaswarm](https://github.com/dsifry/metaswarm)) | Selective context loading by scope (files, keywords, work type) so memory stays bounded and relevant. |
+| [cc10x](https://github.com/romiluz13/cc10x) | Intent-based routing, router-as-single-entry-point, session memory, verification-before-completion, pre-compact state persistence, pre-commit gate |
+| [babysitter](https://github.com/a5c-ai/babysitter) | Hook-driven orchestration, human escalation, iteration caps, quality gates |
+| [beads](https://github.com/steveyegge/beads) | Task/dependency model; Autonomis uses a file-based store with an interface for an optional beads backend |
+| [metaswarm](https://github.com/dsifry/metaswarm) | Selective context loading so memory stays bounded and relevant |
 
-*If your project is listed here and you prefer different attribution or wording, please open an issue.*
+*If your project is listed and you want different attribution, please open an issue.*
 
 ---
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+---
+
+<p align="center">
+  <strong>Autonomis v0.1.0</strong><br>
+  <em>SDLC orchestration for Claude Code & Cursor — security and performance from the start.</em>
+</p>

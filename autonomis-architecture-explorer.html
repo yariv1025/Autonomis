@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Autonomis — Architecture</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#1a365d',
+        primaryTextColor: '#f7fafc',
+        primaryBorderColor: '#2c5282',
+        lineColor: '#63b3ed',
+        secondaryColor: '#2d3748',
+        tertiaryColor: '#2c5282',
+        background: '#0f172a',
+        mainBkg: '#1e293b',
+        nodeBorder: '#475569',
+        clusterBkg: '#1e293b',
+        clusterBorder: '#334155',
+        titleColor: '#f1f5f9',
+        edgeLabelBackground: '#1e293b',
+        textColor: '#e2e8f0',
+        fontFamily: 'ui-sans-serif, system-ui, sans-serif'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #34d399;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+      letter-spacing: -0.02em;
+    }
+    .tagline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+    .diagram-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .diagram-section h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 1rem 0;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+    .mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .legend {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .legend ul {
+      margin: 0.5rem 0 0 0;
+      padding-left: 1.25rem;
+    }
+    .legend li { margin-bottom: 0.25rem; }
+    .intents {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .intents span {
+      background: var(--border);
+      color: var(--text);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: ui-monospace, monospace;
+    }
+    footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Autonomis</h1>
+      <p class="tagline">High-level architecture — Router → SDLC phases → Execution loop</p>
+    </header>
+
+    <section class="diagram-section">
+      <h2>Flow</h2>
+      <div class="mermaid">
+flowchart LR
+  subgraph entry [Entry]
+    Router[Router]
+  end
+  subgraph sdlc [SDLC Phases]
+    R[Research]
+    P[Plan]
+    DR[Design Review]
+    subgraph EL [Execution Loop]
+      Impl[Implement]
+      Val[Validate]
+      Debug[Debug]
+      Rev[Review]
+      Impl --> Val
+      Val -->|on failure| Debug
+      Debug --> Val
+      Val -->|on pass| Rev
+    end
+    PRPhase[PR]
+    L[Learning]
+  end
+  Router --> R --> P --> DR --> EL --> PRPhase --> L
+  Router -.->|PLAN intent| P
+  Router -.->|BUILD intent| EL
+  Router -.->|DEBUG intent| EL
+  Router -.->|REVIEW intent| DR
+      </div>
+      <div class="legend">
+        <strong>Intents (dashed):</strong>
+        <div class="intents">
+          <span>PLAN → Plan</span>
+          <span>BUILD → Execution Loop</span>
+          <span>DEBUG → Execution Loop</span>
+          <span>REVIEW → Design Review</span>
+        </div>
+        <ul>
+          <li><strong>Router</strong> is the only entry point; it detects intent and routes to the full SDLC or a specific phase.</li>
+          <li><strong>Execution Loop</strong> is deterministic: Implement → Validate → (on fail) Debug → Validate → (on pass) Review.</li>
+          <li>Design Review and Code Review enforce OWASP Top 10 and a performance rubric.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <a href="https://github.com/yariv1025/Autonomis">Autonomis</a> — SDLC-driven orchestration for Claude Code and Cursor. Security-first (OWASP Top 10), performance-first.
+    </footer>
+  </div>
+</body>
+</html>
